@@ -42,7 +42,28 @@ def display_chess_board() -> None:
         chess_row = ""
     print("    a    b    c    d    e    f    g    h") # board letter notation
 
-#TODO: add piece movement
+def white_to_move() -> None:
+    piece_notation = ["K", "Q", "R", "B", "N"]
+    letter_notation = ["a", "b", "c", "d", "e", "f", "g", "h"]
+    is_valid_move = False
+    while is_valid_move is False:
+        next_move = input("YOUR TURN: ")
+        
+        next_move_notation = next_move[-2:]
+        next_move_letter_notation = next_move[-2]
+        next_move_number_notation = next_move[-1]
+        
+        # if moving a pawn
+        if next_move[0] not in piece_notation:
+            if chess_board_dict[next_move_notation] is None:
+                
+                # moves the pawn up from inital placement
+                chess_board_dict[next_move_notation] = chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - 2)]
+                chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - 2)] = None
+                is_valid_move = True
+
+    display_chess_board()
 
 if __name__ == "__main__":
     display_chess_board()
+    white_to_move()
