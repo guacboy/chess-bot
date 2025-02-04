@@ -23,21 +23,26 @@ chess_piece_dict = {
     "white_pawn": "♙",
 }
 
-def chess_board() -> None:
+def display_chess_board() -> None:
     # prints the chess board with current pieces
     chess_row = ""
-    print("+----+----+----+----+----+----+----+----+")
-    for number in range(8, 0, -1): # number notation
-        for letter in ["a", "b", "c", "d", "e", "f", "g", "h"]: # letter notation
+    print("  +----+----+----+----+----+----+----+----+")
+    for number in range(8, 0, -1): # move number notation
+        for letter in ["a", "b", "c", "d", "e", "f", "g", "h"]: # move letter notation
             # if the current space is empty
             if chess_board_dict[letter + str(number)] is None:
+                # adds an empty space
                 chess_row += "    |"
             # if the current space has a piece
             else:
+                # adds the piece to the board
                 chess_row += f" {chess_piece_dict[chess_board_dict[letter + str(number)]]}  |"
-        print("|" + chess_row)
-        print("+----+----+----+----+----+----+----+----+")
+        print(f"{number} |{chess_row}")
+        print("  +----+----+----+----+----+----+----+----+")
         chess_row = ""
+    print("    a    b    c    d    e    f    g    h") # board letter notation
+
+#TODO: add piece movement
 
 if __name__ == "__main__":
-    chess_board()
+    display_chess_board()
