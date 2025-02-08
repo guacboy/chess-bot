@@ -53,27 +53,35 @@ chess_piece_specific_data_dict = {
     },
     "bp1": {
         "name": "black_pawn",
+        "can_move_two_spaces": True,
     },
     "bp2": {
         "name": "black_pawn",
+        "can_move_two_spaces": True,
     },
     "bp3": {
         "name": "black_pawn",
+        "can_move_two_spaces": True,
     },
     "bp4": {
         "name": "black_pawn",
+        "can_move_two_spaces": True,
     },
     "bp5": {
         "name": "black_pawn",
+        "can_move_two_spaces": True,
     },
     "bp6": {
         "name": "black_pawn",
+        "can_move_two_spaces": True,
     },
     "bp7": {
         "name": "black_pawn",
+        "can_move_two_spaces": True,
     },
     "bp8": {
         "name": "black_pawn",
+        "can_move_two_spaces": True,
     },
     
     "wr1": {
@@ -102,26 +110,34 @@ chess_piece_specific_data_dict = {
     },
     "wp1": {
         "name": "white_pawn",
+        "can_move_two_spaces": True,
     },
     "wp2": {
         "name": "white_pawn",
+        "can_move_two_spaces": True,
     },
     "wp3": {
         "name": "white_pawn",
+        "can_move_two_spaces": True,
     },
     "wp4": {
         "name": "white_pawn",
+        "can_move_two_spaces": True,
     },
     "wp5": {
         "name": "white_pawn",
+        "can_move_two_spaces": True,
     },
     "wp6": {
         "name": "white_pawn",
+        "can_move_two_spaces": True,
     },
     "wp7": {
         "name": "white_pawn",
+        "can_move_two_spaces": True,
     },
     "wp8": {
         "name": "white_pawn",
+        "can_move_two_spaces": True,
     },
 }
