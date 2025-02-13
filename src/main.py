@@ -43,12 +43,14 @@ def white_to_move() -> None:
             # if moving a pawn
             if next_move[0] not in piece_notation:
                 is_valid_move = pawn(chess_board_dict, next_move)
+        else:
+            invalid_move("Space occupied.")
 
     display_chess_board()
     black_to_move()
 
 def black_to_move() -> None:
-    display_chess_board()
+    # display_chess_board()
     white_to_move()
 
 if __name__ == "__main__":

@@ -145,6 +145,10 @@ chess_piece_specific_data_dict = {
 cpg_data = chess_piece_general_data_dict # name shortcuts
 cps_data = chess_piece_specific_data_dict 
 
+def invalid_move(explanation: str="") -> bool:
+    print("*INVALID MOVE*", explanation)
+    return False 
+
 def pawn(chess_board_dict: dict, next_move: str) -> bool:
     
     next_move_full_notation = next_move[-2:] # example: e4
@@ -163,8 +167,19 @@ def pawn(chess_board_dict: dict, next_move: str) -> bool:
         # ignores NoneType
         except TypeError:
             pass
+        except KeyError:
+            return invalid_move("No pawn found.")
         
         if is_pawn:
+            can_move_two_spaces = cps_data[chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - look_for_pawn)][1]]["can_move_two_spaces"]
+            
+            # attempting to move a pawn two spaces if it has already moved from inital position
+            if look_for_pawn == 2 and can_move_two_spaces is False:
+                return invalid_move("Pawn can not move two spaces.")
+            
+            # updates pawn eligbility to move two spaces after first move
+            cps_data[chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - look_for_pawn)][1]]["can_move_two_spaces"] = False
+
             # pawn has been found, break loop
             go_back_from_next_move = look_for_pawn
             break
@@ -175,8 +190,7 @@ def pawn(chess_board_dict: dict, next_move: str) -> bool:
         chess_board_dict[next_move_full_notation] = chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - go_back_from_next_move)]
         # updates previous space to empty
         chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - go_back_from_next_move)] = None
-    # invalid move
     except UnboundLocalError:
-        return False
+        return invalid_move("No pawn found.")
 
-    return True
+    return True # valid move
