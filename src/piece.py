@@ -160,25 +160,26 @@ def pawn(chess_board_dict: dict, next_move: str) -> bool:
     for look_for_pawn in range(1, 3):
         try:
             # locates pawn
-            is_pawn = chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - look_for_pawn)][0].endswith("pawn")
+            is_pawn = cps_data[chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - look_for_pawn)]]["name"].endswith("pawn")
         # ignores NoneType
         except AttributeError:
-            pass
+            continue
         # ignores NoneType
         except TypeError:
-            pass
+            continue
+        # ignores NoneType
         except KeyError:
-            return invalid_move("No pawn found.")
+            continue
         
         if is_pawn:
-            can_move_two_spaces = cps_data[chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - look_for_pawn)][1]]["can_move_two_spaces"]
+            can_move_two_spaces = cps_data[chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - look_for_pawn)]]["can_move_two_spaces"]
             
             # attempting to move a pawn two spaces if it has already moved from inital position
             if look_for_pawn == 2 and can_move_two_spaces is False:
                 return invalid_move("Pawn can not move two spaces.")
             
             # updates pawn eligbility to move two spaces after first move
-            cps_data[chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - look_for_pawn)][1]]["can_move_two_spaces"] = False
+            cps_data[chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - look_for_pawn)]]["can_move_two_spaces"] = False
 
             # pawn has been found, break loop
             go_back_from_next_move = look_for_pawn
