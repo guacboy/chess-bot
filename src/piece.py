@@ -143,7 +143,7 @@ chess_piece_specific_data_dict = {
 }
 
 cpg_data = chess_piece_general_data_dict # name shortcuts
-cps_data = chess_piece_specific_data_dict 
+cps_data = chess_piece_specific_data_dict
 
 def invalid_move(explanation: str="") -> bool:
     print("*INVALID MOVE*", explanation)
