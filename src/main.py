@@ -35,8 +35,6 @@ def create_chess_board(modified_move_list: list=[]) -> None:
                 chess_board_dict[new_board_notation] = chess_board_dict.get(board_notation)
                 chess_board_dict[board_notation] = None
                 break
-    
-    display_chess_board()
 
 def display_chess_board() -> None:
     # prints the chess board with current pieces
@@ -57,14 +55,16 @@ def display_chess_board() -> None:
         print("  +----+----+----+----+----+----+----+----+")
         chess_row = ""
     print("    a    b    c    d    e    f    g    h") # board letter notation
-    
-    white_to_move() # game starts with white
 
-def white_to_move() -> None:
+def white_to_move(is_test_move: bool=False, test_move: str=None) -> None:
     piece_notation = ["K", "Q", "R", "B", "N"]
     is_valid_move = False
     while is_valid_move is False:
-        next_move = input("YOUR TURN: ")
+        # move is already pre-seeded
+        if is_test_move:
+            next_move = test_move
+        else:
+            next_move = input("YOUR TURN: ")
         
         # if the "next move" is empty
         if chess_board_dict[next_move] is None:
@@ -74,12 +74,20 @@ def white_to_move() -> None:
         else:
             invalid_move("Space occupied.")
 
-    display_chess_board()
-    black_to_move()
+    # prevents infinite recursion
+    if is_test_move:
+        return
+    # only continue if it's a real game
+    else:
+        display_chess_board()
+        black_to_move()
 
-def black_to_move() -> None:
+def black_to_move(is_test_move: bool=False, test_move: str=None) -> None:
+    #TODO: black to move
     # display_chess_board()
     white_to_move()
 
 if __name__ == "__main__":
     create_chess_board()
+    display_chess_board()
+    white_to_move() # game starts with white

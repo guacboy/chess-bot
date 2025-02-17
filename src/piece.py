@@ -193,5 +193,8 @@ def pawn(chess_board_dict: dict, next_move: str) -> bool:
         chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - go_back_from_next_move)] = None
     except UnboundLocalError:
         return invalid_move("No pawn found.")
+    
+    #TODO: pawn capture
+    #TODO: pawn enpassent
 
     return True # valid move
