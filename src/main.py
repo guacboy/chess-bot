@@ -67,14 +67,19 @@ def white_to_move(is_test_move: bool=False, test_move: str=None) -> None:
             next_move = input("YOUR TURN: ")
         
         # if the "next move" is empty
-        if chess_board_dict[next_move] is None:
+        if (chess_board_dict[next_move[-2:]] is None
+            # or if attempting to capture a piece
+            or cps_data[chess_board_dict[next_move[-2:]]]["name"].startswith("black")):
             # if moving a pawn
             if next_move[0] not in piece_notation:
-                is_valid_move = pawn(chess_board_dict, next_move)
+                if next_move[1] == "x":
+                    is_valid_move = pawn(chess_board_dict, next_move)
+                else:
+                    is_valid_move = pawn(chess_board_dict, next_move)
         else:
             invalid_move("Space occupied.")
 
-    # prevents infinite recursion
+    # prevents infinite recursion for pre-seeded moves
     if is_test_move:
         return
     # only continue if it's a real game
@@ -88,6 +93,6 @@ def black_to_move(is_test_move: bool=False, test_move: str=None) -> None:
     white_to_move()
 
 if __name__ == "__main__":
-    create_chess_board()
+    create_chess_board([["e6", "wp5"]])
     display_chess_board()
     white_to_move() # game starts with white
