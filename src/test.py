@@ -40,18 +40,32 @@ def test_pawn() -> list:
     # tests if pawn can move two spaces, then one space forward
     def can_pawn_move() -> str:
         create_chess_board()
+        
         for notation in ["a4", "a5"]:
             white_to_move(True, notation)
+            
         if chess_board_dict.get("a5") == "wp1":
             return "TEST PASSED"
         else:
             # pawn did not move properly
             return "can_pawn_move() FAILED"
         
-    #TODO: can a pawn capture
+    # tests if pawn can capture right, then left
+    def can_pawn_capture() -> str:
+        create_chess_board([["a6", "wp1"]])
+                
+        for notation in ["axb7", "bxa8"]:
+            white_to_move(True, notation)
+            
+        if chess_board_dict.get("a8") == "wp1":
+            return "TEST PASSED"
+        else:
+            # pawn did not capture properly
+            return "can_pawn_move() FAILED"
+        
     #TODO: can a pawn enpassent
     
-    return can_pawn_move(), "TEST PASSED"
+    return can_pawn_move(), can_pawn_capture()
 
 if __name__ == "__main__":
     run_all_test()

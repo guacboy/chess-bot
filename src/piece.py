@@ -152,6 +152,7 @@ def invalid_move(explanation: str="") -> bool:
 def pawn(chess_board_dict: dict, next_move: str) -> bool:    
     is_pawn = False
     
+    #TODO: refactor code to make it smaller; use get()
     # if attempting to capture a piece
     if len(next_move) == 4 and next_move[1] == "x":
         next_move_location_notation = next_move[-2:] # exmaple: e4
