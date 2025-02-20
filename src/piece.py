@@ -152,71 +152,60 @@ def invalid_move(explanation: str="") -> bool:
 def pawn(chess_board_dict: dict, next_move: str) -> bool:    
     is_pawn = False
     
-    #TODO: refactor code to make it smaller; use get()
     # if attempting to capture a piece
     if len(next_move) == 4 and next_move[1] == "x":
-        next_move_location_notation = next_move[-2:] # exmaple: e4
         next_move_piece_notation = next_move[0] # example: d
-        next_move_letter_notation = next_move[2] # exmaple: e
+        next_move_location_notation = next_move[-2:] # example: e4
+        next_move_letter_notation = next_move[2] # example: e
         next_move_number_notation = next_move[3] # example: 4
+        
+        #TODO: pawn enpassent
         
         if next_move_piece_notation == next_move_letter_notation:
             return invalid_move("Pawn can not capture forward.")
         
         # locates pawn
-        is_pawn = cps_data[chess_board_dict.get(next_move_piece_notation + str(int(next_move_number_notation) - 1))]["name"].endswith("pawn")
-
+        pawn = chess_board_dict.get(next_move_piece_notation + str(int(next_move_number_notation) - 1))
         
+        if pawn != None:
+            is_pawn = cps_data[pawn]["name"].endswith("pawn")
+
         if is_pawn:
             # captures piece
-            chess_board_dict[next_move_location_notation] = chess_board_dict.get(next_move_piece_notation + str(int(next_move_number_notation) - 1))
+            chess_board_dict[next_move_location_notation] = pawn
             # updates previous space to empty
             chess_board_dict[next_move_piece_notation + str(int(next_move_number_notation) - 1)] = None
-        else:
-            return invalid_move("No pawn found.")
+            
+            return True # valid move
+    # if moving piece
     else:
-        
         next_move_letter_notation = next_move[0] # example: e
         next_move_number_notation = next_move[1] # example: 4
         
         # scans one and two spaces behind "next move" for a pawn
         for check_backwards in range(1, 3):
-            try:
-                # locates pawn
-                is_pawn = cps_data[chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - check_backwards)]]["name"].endswith("pawn")
-            # ignores NoneType
-            except AttributeError:
-                continue
-            # ignores NoneType
-            except TypeError:
-                continue
-            # ignores NoneType
-            except KeyError:
-                continue
+            # locates pawn
+            pawn = chess_board_dict.get(next_move_letter_notation + str(int(next_move_number_notation) - check_backwards))
+            
+            if pawn != None:
+                is_pawn = cps_data.get(pawn)["name"].endswith("pawn")
             
             if is_pawn:                    
-                can_move_two_spaces = cps_data[chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - check_backwards)]]["can_move_two_spaces"]
+                can_move_two_spaces = cps_data.get(pawn)["can_move_two_spaces"]
                 
                 # attempting to move a pawn two spaces if it has already moved from inital position
                 if check_backwards == 2 and can_move_two_spaces is False:
                     return invalid_move("Pawn can not move two spaces.")
                 
                 # updates pawn eligbility to move two spaces after first move
-                cps_data[chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - check_backwards)]]["can_move_two_spaces"] = False
-
-                # pawn has been found, break loop
-                go_back_from_next_move = check_backwards
-                break
-        
-        try:
-            # moves the pawn up
-            # finds a pawn x spaces behind the "next move"
-            chess_board_dict[next_move] = chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - go_back_from_next_move)]
-            # updates previous space to empty
-            chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - go_back_from_next_move)] = None
-        except UnboundLocalError:
-            return invalid_move("No pawn found.")
+                cps_data.get(pawn)["can_move_two_spaces"] = False
+                
+                # finds the pawn x spaces behind the "next move"
+                chess_board_dict[next_move] = pawn
+                # updates previous space to empty
+                chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - check_backwards)] = None
+                
+                return True # valid move
     
-    #TODO: pawn enpassent
-
-    return True # valid move
+    return invalid_move("No pawn found.")
+    

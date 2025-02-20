@@ -42,7 +42,7 @@ def display_chess_board() -> None:
     print("  +----+----+----+----+----+----+----+----+")
     for number in range(8, 0, -1): # move number notation
         for letter in ["a", "b", "c", "d", "e", "f", "g", "h"]: # move letter notation
-            current_space = chess_board_dict[letter + str(number)]
+            current_space = chess_board_dict.get(letter + str(number))
             # if the current space is empty
             if current_space is None:
                 # adds an empty space
@@ -50,26 +50,27 @@ def display_chess_board() -> None:
             # if the current space has a piece
             else:
                 # adds the piece to the board
-                chess_row += f" {cpg_data[cps_data[current_space]["name"]]["unicode"]}  |"
+                chess_row += f" {cpg_data.get(cps_data.get(current_space)["name"])["unicode"]}  |"
         print(f"{number} |{chess_row}")
         print("  +----+----+----+----+----+----+----+----+")
         chess_row = ""
     print("    a    b    c    d    e    f    g    h") # board letter notation
 
-def white_to_move(is_test_move: bool=False, test_move: str=None) -> None:
+def white_to_move(is_pass_next_player_turn: bool=False, test_move: str=None) -> None:
     piece_notation = ["K", "Q", "R", "B", "N"]
     is_valid_move = False
     while is_valid_move is False:
         # move is already pre-seeded
-        if is_test_move:
+        if is_pass_next_player_turn:
             next_move = test_move
         else:
             next_move = input("YOUR TURN: ")
         
+        next_move_location_notation = next_move[-2:] # example: e4
         # if the "next move" is empty
-        if (chess_board_dict[next_move[-2:]] is None
+        if (chess_board_dict.get(next_move_location_notation) is None
             # or if attempting to capture a piece
-            or cps_data[chess_board_dict[next_move[-2:]]]["name"].startswith("black")):
+            or cps_data.get(chess_board_dict.get(next_move_location_notation))["name"].startswith("black")):
             # if moving a pawn
             if next_move[0] not in piece_notation:
                 if next_move[1] == "x":
@@ -80,17 +81,19 @@ def white_to_move(is_test_move: bool=False, test_move: str=None) -> None:
             invalid_move("Space occupied.")
 
     # prevents infinite recursion for pre-seeded moves
-    if is_test_move:
+    if is_pass_next_player_turn:
         return
     # only continue if it's a real game
     else:
         display_chess_board()
         black_to_move()
 
-def black_to_move(is_test_move: bool=False, test_move: str=None) -> None:
+def black_to_move(is_pass_next_player_turn: bool=False, test_move: str=None) -> None:
     #TODO: black to move
     # display_chess_board()
     white_to_move()
+
+#TODO: combine black and white to move
 
 if __name__ == "__main__":
     create_chess_board([["e6", "wp5"]])
