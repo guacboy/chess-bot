@@ -54,6 +54,7 @@ chess_piece_specific_data_dict = {
     "bp1": {
         "name": "black_pawn",
         "can_move_two_spaces": True,
+        "can_be_en_passant": False,
     },
     "bp2": {
         "name": "black_pawn",
@@ -159,7 +160,8 @@ def pawn(chess_board_dict: dict, next_move: str) -> bool:
         next_move_letter_notation = next_move[2] # example: e
         next_move_number_notation = next_move[3] # example: 4
         
-        #TODO: pawn enpassent
+
+        #TODO: make it flexible for black to move
         
         if next_move_piece_notation == next_move_letter_notation:
             return invalid_move("Pawn can not capture forward.")
@@ -171,10 +173,24 @@ def pawn(chess_board_dict: dict, next_move: str) -> bool:
             is_pawn = cps_data[pawn]["name"].endswith("pawn")
 
         if is_pawn:
-            # captures piece
-            chess_board_dict[next_move_location_notation] = pawn
-            # updates previous space to empty
-            chess_board_dict[next_move_piece_notation + str(int(next_move_number_notation) - 1)] = None
+            # if attempting to capture
+            if chess_board_dict[next_move_location_notation] != None:
+                # captures piece
+                chess_board_dict[next_move_location_notation] = pawn
+                # updates previous space to empty
+                chess_board_dict[next_move_piece_notation + str(int(next_move_number_notation) - 1)] = None
+            #TODO: pawn enpassent
+            # The capturing pawn must have advanced exactly three ranks to perform this move.
+            # The captured pawn must have moved two squares in one move, landing right next to the capturing pawn.
+            # The en passant capture must be performed on the turn immediately after the pawn being captured moves. If the player does not capture en passant on that turn, they no longer can do it later.
+            # if attempting to en-passant an enemy's pawn
+            else:
+                is_enemy_pawn = chess_board_dict.get(next_move_piece_notation + next_move_number_notation)
+                
+                if is_enemy_pawn != None:
+                    pass
+                else:
+                    return invalid_move("No piece to capture.")
             
             return True # valid move
     # if moving piece

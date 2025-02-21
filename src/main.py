@@ -56,15 +56,15 @@ def display_chess_board() -> None:
         chess_row = ""
     print("    a    b    c    d    e    f    g    h") # board letter notation
 
-def white_to_move(is_pass_next_player_turn: bool=False, test_move: str=None) -> None:
+def white_to_move(seeded_moves: str=None) -> None:
     piece_notation = ["K", "Q", "R", "B", "N"]
     is_valid_move = False
     while is_valid_move is False:
         # move is already pre-seeded
-        if is_pass_next_player_turn:
-            next_move = test_move
-        else:
+        if seeded_moves == None:
             next_move = input("YOUR TURN: ")
+        else:
+            next_move = seeded_moves
         
         next_move_location_notation = next_move[-2:] # example: e4
         # if the "next move" is empty
@@ -80,18 +80,21 @@ def white_to_move(is_pass_next_player_turn: bool=False, test_move: str=None) -> 
         else:
             invalid_move("Space occupied.")
 
-    # prevents infinite recursion for pre-seeded moves
-    if is_pass_next_player_turn:
-        return
-    # only continue if it's a real game
-    else:
+    # if it's a real game (no pre-seed moves)
+    if seeded_moves == None:
         display_chess_board()
         black_to_move()
+    # if no more pre-seeded moves
+    else:
+        return
 
-def black_to_move(is_pass_next_player_turn: bool=False, test_move: str=None) -> None:
-    #TODO: black to move
-    # display_chess_board()
-    white_to_move()
+def black_to_move(seeded_moves: str=None) -> None:
+    if seeded_moves == None:
+        display_chess_board()
+        white_to_move()
+    # if no more pre-seeded moves
+    else:
+        return
 
 #TODO: combine black and white to move
 

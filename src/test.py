@@ -36,13 +36,22 @@ def run_all_test() -> None:
         if result.endswith("FAILED"):
             break
 
+def run_move_list(notation_list: list) -> None:
+    for list in notation_list:
+        # iterates the list of moves ["white_to_move", "black_to_move"]
+        for idx, notation in enumerate(list):
+            white_to_move(notation)
+            black_to_move(list[idx + 1])
+            break # only runs once
+
 def test_pawn() -> list:
     # tests if pawn can move two spaces, then one space forward
     def can_pawn_move() -> str:
         create_chess_board()
         
-        for notation in ["a4", "a5"]:
-            white_to_move(True, notation)
+        # TODO: remove repeated temporary white's move
+        notation_list = [["a4", "b3"], ["a5", "b4"]]
+        run_move_list(notation_list)
             
         if chess_board_dict.get("a5") == "wp1":
             return "TEST PASSED"
@@ -53,9 +62,10 @@ def test_pawn() -> list:
     # tests if pawn can capture right, then left
     def can_pawn_capture() -> str:
         create_chess_board([["a6", "wp1"]])
-                
-        for notation in ["axb7", "bxa8"]:
-            white_to_move(True, notation)
+        
+        # TODO: remove repeated  temporary white's move
+        notation_list = [["axb7", "b3"], ["bxa8", "b4"]]
+        run_move_list(notation_list)
             
         if chess_board_dict.get("a8") == "wp1":
             return "TEST PASSED"
