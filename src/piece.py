@@ -150,7 +150,13 @@ def invalid_move(explanation: str="") -> bool:
     print("*INVALID MOVE*", explanation)
     return False 
 
-def pawn(chess_board_dict: dict, next_move: str) -> bool:    
+def pawn(chess_board_dict: dict, next_move: str, color: str) -> bool:
+    # white to move
+    reverse_search = 1
+    # black to move
+    if color == "black":
+        reverse_search = -1
+    
     is_pawn = False
     
     # if attempting to capture a piece
@@ -160,14 +166,11 @@ def pawn(chess_board_dict: dict, next_move: str) -> bool:
         next_move_letter_notation = next_move[2] # example: e
         next_move_number_notation = next_move[3] # example: 4
         
-
-        #TODO: make it flexible for black to move
-        
         if next_move_piece_notation == next_move_letter_notation:
             return invalid_move("Pawn can not capture forward.")
         
         # locates pawn
-        pawn = chess_board_dict.get(next_move_piece_notation + str(int(next_move_number_notation) - 1))
+        pawn = chess_board_dict.get(next_move_piece_notation + str(int(next_move_number_notation) - (1 * reverse_search)))
         
         if pawn != None:
             is_pawn = cps_data[pawn]["name"].endswith("pawn")
@@ -178,7 +181,7 @@ def pawn(chess_board_dict: dict, next_move: str) -> bool:
                 # captures piece
                 chess_board_dict[next_move_location_notation] = pawn
                 # updates previous space to empty
-                chess_board_dict[next_move_piece_notation + str(int(next_move_number_notation) - 1)] = None
+                chess_board_dict[next_move_piece_notation + str(int(next_move_number_notation) - (1 * reverse_search))] = None
             #TODO: pawn enpassent
             # The capturing pawn must have advanced exactly three ranks to perform this move.
             # The captured pawn must have moved two squares in one move, landing right next to the capturing pawn.
@@ -192,6 +195,7 @@ def pawn(chess_board_dict: dict, next_move: str) -> bool:
                 else:
                     return invalid_move("No piece to capture.")
             
+            # FIXME: player can pass a move if capturing nothing
             return True # valid move
     # if moving piece
     else:
@@ -201,7 +205,7 @@ def pawn(chess_board_dict: dict, next_move: str) -> bool:
         # scans one and two spaces behind "next move" for a pawn
         for check_backwards in range(1, 3):
             # locates pawn
-            pawn = chess_board_dict.get(next_move_letter_notation + str(int(next_move_number_notation) - check_backwards))
+            pawn = chess_board_dict.get(next_move_letter_notation + str(int(next_move_number_notation) - (check_backwards * reverse_search)))
             
             if pawn != None:
                 is_pawn = cps_data.get(pawn)["name"].endswith("pawn")
@@ -219,7 +223,7 @@ def pawn(chess_board_dict: dict, next_move: str) -> bool:
                 # finds the pawn x spaces behind the "next move"
                 chess_board_dict[next_move] = pawn
                 # updates previous space to empty
-                chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - check_backwards)] = None
+                chess_board_dict[next_move_letter_notation + str(int(next_move_number_notation) - (check_backwards * reverse_search))] = None
                 
                 return True # valid move
     

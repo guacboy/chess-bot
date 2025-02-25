@@ -40,17 +40,16 @@ def run_move_list(notation_list: list) -> None:
     for list in notation_list:
         # iterates the list of moves ["white_to_move", "black_to_move"]
         for idx, notation in enumerate(list):
-            white_to_move(notation)
-            black_to_move(list[idx + 1])
-            break # only runs once
+            color_to_move(seeded_moves=notation, color="white")
+            color_to_move(seeded_moves=list[idx + 1], color="black")
+            break # only runs once per move
 
 def test_pawn() -> list:
     # tests if pawn can move two spaces, then one space forward
     def can_pawn_move() -> str:
         create_chess_board()
         
-        # TODO: remove repeated temporary white's move
-        notation_list = [["a4", "b3"], ["a5", "b4"]]
+        notation_list = [["a4", "b5"], ["a5", "b4"]]
         run_move_list(notation_list)
             
         if chess_board_dict.get("a5") == "wp1":
@@ -61,10 +60,9 @@ def test_pawn() -> list:
         
     # tests if pawn can capture right, then left
     def can_pawn_capture() -> str:
-        create_chess_board([["a6", "wp1"]])
+        create_chess_board([["a6", "wp1"], ["a3", "bp1"]])
         
-        # TODO: remove repeated  temporary white's move
-        notation_list = [["axb7", "b3"], ["bxa8", "b4"]]
+        notation_list = [["axb7", "axb2"], ["bxa8", "bxa1"]]
         run_move_list(notation_list)
             
         if chess_board_dict.get("a8") == "wp1":

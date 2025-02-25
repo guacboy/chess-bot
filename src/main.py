@@ -5,6 +5,7 @@ cps_data = chess_piece_specific_data_dict
 chess_board_dict = {} # chess board
 
 # creates the chess board with optional modified starting position
+# modified_move_list should be formatted as [["location", "piece_id"]]
 def create_chess_board(modified_move_list: list=[]) -> None:
     # clears any previous board
     if len(chess_board_dict) > 0:
@@ -56,13 +57,18 @@ def display_chess_board() -> None:
         chess_row = ""
     print("    a    b    c    d    e    f    g    h") # board letter notation
 
-def white_to_move(seeded_moves: str=None) -> None:
+def color_to_move(seeded_moves: str=None, color: str="") -> None:
+    if color == "white":
+        opponent_color = "black"
+    elif color == "black":
+        opponent_color = "white"
+    
     piece_notation = ["K", "Q", "R", "B", "N"]
     is_valid_move = False
     while is_valid_move is False:
         # move is already pre-seeded
         if seeded_moves == None:
-            next_move = input("YOUR TURN: ")
+            next_move = input(f"{color.upper()} TO MOVE: ")
         else:
             next_move = seeded_moves
         
@@ -70,35 +76,23 @@ def white_to_move(seeded_moves: str=None) -> None:
         # if the "next move" is empty
         if (chess_board_dict.get(next_move_location_notation) is None
             # or if attempting to capture a piece
-            or cps_data.get(chess_board_dict.get(next_move_location_notation))["name"].startswith("black")):
+            or (cps_data.get(chess_board_dict.get(next_move_location_notation))["name"].startswith(opponent_color)
+                and next_move[1] == "x")):
             # if moving a pawn
             if next_move[0] not in piece_notation:
-                if next_move[1] == "x":
-                    is_valid_move = pawn(chess_board_dict, next_move)
-                else:
-                    is_valid_move = pawn(chess_board_dict, next_move)
+                is_valid_move = pawn(chess_board_dict, next_move, color)
         else:
             invalid_move("Space occupied.")
 
     # if it's a real game (no pre-seed moves)
     if seeded_moves == None:
         display_chess_board()
-        black_to_move()
+        color_to_move(color=opponent_color)
     # if no more pre-seeded moves
     else:
         return
-
-def black_to_move(seeded_moves: str=None) -> None:
-    if seeded_moves == None:
-        display_chess_board()
-        white_to_move()
-    # if no more pre-seeded moves
-    else:
-        return
-
-#TODO: combine black and white to move
 
 if __name__ == "__main__":
     create_chess_board([["e6", "wp5"]])
     display_chess_board()
-    white_to_move() # game starts with white
+    color_to_move(color="white") # game starts with white
