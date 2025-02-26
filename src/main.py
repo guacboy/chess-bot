@@ -93,6 +93,6 @@ def color_to_move(seeded_moves: str=None, color: str="") -> None:
         return
 
 if __name__ == "__main__":
-    create_chess_board([["e6", "wp5"]])
+    create_chess_board([["e5", "wp5"], ["d5", "bp4"]])
     display_chess_board()
     color_to_move(color="white") # game starts with white

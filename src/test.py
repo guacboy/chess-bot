@@ -49,7 +49,9 @@ def test_pawn() -> list:
     def can_pawn_move() -> str:
         create_chess_board()
         
-        notation_list = [["a4", "b5"], ["a5", "b4"]]
+        notation_list = [
+            ["a4", "b5"], ["a5", "b4"]
+        ]
         run_move_list(notation_list)
             
         if chess_board_dict.get("a5") == "wp1":
@@ -62,7 +64,9 @@ def test_pawn() -> list:
     def can_pawn_capture() -> str:
         create_chess_board([["a6", "wp1"], ["a3", "bp1"]])
         
-        notation_list = [["axb7", "axb2"], ["bxa8", "bxa1"]]
+        notation_list = [
+            ["axb7", "axb2"], ["bxa8", "bxa1"]
+        ]
         run_move_list(notation_list)
             
         if chess_board_dict.get("a8") == "wp1":
