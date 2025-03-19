@@ -1,98 +1,62 @@
-from piece import *
+import pygame
 
-cpg_data = chess_piece_general_data_dict # name shortcuts
-cps_data = chess_piece_specific_data_dict 
-chess_board_dict = {} # chess board
+pygame.init()
 
-# creates the chess board with optional modified starting position
-# modified_move_list should be formatted as [["location", "piece_id"]]
-def create_chess_board(modified_move_list: list=[]) -> None:
-    # clears any previous board
-    if len(chess_board_dict) > 0:
-        chess_board_dict.clear()
+screen = pygame.display.set_mode((720, 620))
+clock = pygame.time.Clock()
+
+def app() -> None:
+    is_running = True
     
-    # standard starting position
-    chess_board_dict.update({
-        "a8": "br1", "b8": "bn1", "c8": "bb1", "d8": "bq", "e8": "bk", "f8": "bb2", "g8": "bn2", "h8": "br2", 
-        "a7": "bp1", "b7": "bp2", "c7": "bp3", "d7": "bp4", "e7": "bp5", "f7": "bp6", "g7": "bp7", "h7": "bp8", 
-        "a6": None, "b6": None, "c6": None, "d6": None, "e6": None, "f6": None, "g6": None, "h6": None, 
-        "a5": None, "b5": None, "c5": None, "d5": None, "e5": None, "f5": None, "g5": None, "h5": None, 
-        "a4": None, "b4": None, "c4": None, "d4": None, "e4": None, "f4": None, "g4": None, "h4": None, 
-        "a3": None, "b3": None, "c3": None, "d3": None, "e3": None, "f3": None, "g3": None, "h3": None, 
-        "a2": "wp1", "b2": "wp2", "c2": "wp3", "d2": "wp4", "e2": "wp5", "f2": "wp6", "g2": "wp7", "h2": "wp8", 
-        "a1": "wp1", "b1": "wn1", "c1": "wb1", "d1": "wq", "e1": "wk", "f1": "wb2", "g1": "wn2", "h1": "wr2",
-    })
+    # list of objects
+    objects = []
+    rectangle = pygame.Rect(100, 100, 100, 200)
+    objects.append(rectangle)
+    square = pygame.Rect(500, 100, 100, 100)
+    objects.append(square)
     
-    # if there is a modified starting position
-    for modified_move in modified_move_list:
-        new_board_notation = modified_move[0] # targeted notation
-        new_piece_ID = modified_move[1] # targeted piece
+    is_moving = False
+    
+    while is_running:
+        screen.fill("black") # color BG
         
-        # loops through the chess board dict
-        for board_notation, piece_ID in chess_board_dict.items():
-            # if the current piece is the same as the targeted piece
-            if piece_ID == new_piece_ID:
-                # "swaps" position and ends loop
-                chess_board_dict[new_board_notation] = chess_board_dict.get(board_notation)
-                chess_board_dict[board_notation] = None
-                break
-
-def display_chess_board() -> None:
-    # prints the chess board with current pieces
-    chess_row = ""
-    print("  +----+----+----+----+----+----+----+----+")
-    for number in range(8, 0, -1): # move number notation
-        for letter in ["a", "b", "c", "d", "e", "f", "g", "h"]: # move letter notation
-            current_space = chess_board_dict.get(letter + str(number))
-            # if the current space is empty
-            if current_space is None:
-                # adds an empty space
-                chess_row += "    |"
-            # if the current space has a piece
-            else:
-                # adds the piece to the board
-                chess_row += f" {cpg_data.get(cps_data.get(current_space)["name"])["unicode"]}  |"
-        print(f"{number} |{chess_row}")
-        print("  +----+----+----+----+----+----+----+----+")
-        chess_row = ""
-    print("    a    b    c    d    e    f    g    h") # board letter notation
-
-def color_to_move(seeded_moves: str=None, color: str="") -> None:
-    if color == "white":
-        opponent_color = "black"
-    elif color == "black":
-        opponent_color = "white"
-    
-    piece_notation = ["K", "Q", "R", "B", "N"]
-    is_valid_move = False
-    while is_valid_move is False:
-        # move is already pre-seeded
-        if seeded_moves == None:
-            next_move = input(f"{color.upper()} TO MOVE: ")
-        else:
-            next_move = seeded_moves
+        # loads objects onto screen
+        pygame.draw.rect(screen, (0, 0, 255), rectangle, 0)
+        pygame.draw.rect(screen, (0, 255, 0), square, 0)
         
-        next_move_location_notation = next_move[-2:] # example: e4
-        # if the "next move" is empty
-        if (chess_board_dict.get(next_move_location_notation) is None
-            # or if attempting to capture a piece
-            or (cps_data.get(chess_board_dict.get(next_move_location_notation))["name"].startswith(opponent_color)
-                and next_move[1] == "x")):
-            # if moving a pawn
-            if next_move[0] not in piece_notation:
-                is_valid_move = pawn(chess_board_dict, next_move, color)
-        else:
-            invalid_move("Space occupied.")
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                is_running = False
+            
+            # if left-mouse button down
+            if (event.type == pygame.MOUSEBUTTONDOWN
+                and event.button == 1):
+                # iterates through the list of objects
+                for object in objects:
+                    # if cursor is inside an object
+                    if object.collidepoint(event.pos):
+                        # initialize object to be moved
+                        object_to_be_moved = object
+                        is_moving = True
+            # if left-mouse button is down
+            # and mouse is moving
+            elif (event.type == pygame.MOUSEMOTION
+                and is_moving):
+                # moves object
+                object_to_be_moved.move_ip(event.rel)
+            # if left-mouse button is up
+            elif (event.type == pygame.MOUSEBUTTONUP
+                and event.button == 1):
+                is_moving = False
 
-    # if it's a real game (no pre-seed moves)
-    if seeded_moves == None:
-        display_chess_board()
-        color_to_move(color=opponent_color)
-    # if no more pre-seeded moves
-    else:
-        return
+        if is_moving:
+            # updates objects position
+            pygame.draw.rect(screen, (0, 0, 255), object_to_be_moved, 0)
+        
+        pygame.display.flip() # displays screen
+        clock.tick(60)  # limits FPS to 60
+
+    pygame.quit()
 
 if __name__ == "__main__":
-    create_chess_board([["e5", "wp5"], ["d5", "bp4"]])
-    display_chess_board()
-    color_to_move(color="white") # game starts with white
+    app()
