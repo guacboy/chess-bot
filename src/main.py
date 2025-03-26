@@ -6,6 +6,10 @@ screen = pg.display.set_mode((920, 720))
 clock = pg.time.Clock()
 
 def app() -> None:
+    """
+    Pygame configurations.
+    """
+    
     is_running = True
     
     # list of objects
@@ -19,11 +23,14 @@ def app() -> None:
     bishop = pg.transform.scale(bishop, (100, 100))
     bishop_collision = bishop.get_rect(center=(200, 100))
     objects.append([bishop, bishop_collision])
-    
+
     is_moving = False
     
     while is_running:
         screen.fill("black") # color BG
+        
+        # loads the chess board
+        load_board()
         
         # loads objects onto screen /
         # updates object's position
@@ -59,5 +66,48 @@ def app() -> None:
 
     pg.quit()
 
+def load_board() -> None:
+    """
+    Loads the chess board.
+    """
+    
+    BOARD_COLOR_1 = "#769656"
+    BOARD_COLOR_2 = "#EEEED2"
+    board_color = BOARD_COLOR_1
+
+    SQUARE_SIZE = 75
+    square_x = SQUARE_INITIAL_X = 100 # initial board position
+    
+    # iterates through the # of columns
+    for column in range(1, 9):
+        # sets y position
+        square_y = column * SQUARE_SIZE
+        
+        # alternates between the two colors
+        # to make the checker theme
+        if board_color == BOARD_COLOR_1:
+            board_color = BOARD_COLOR_2
+        elif board_color == BOARD_COLOR_2:
+            board_color = BOARD_COLOR_1
+        
+        # iterates through the # of rows
+        for row in range(1, 9):
+            # set x position
+            square_x = SQUARE_INITIAL_X + (row * SQUARE_SIZE)
+            
+            # alternates between the two colors
+            # to make the checker theme
+            if board_color == BOARD_COLOR_1:
+                board_color = BOARD_COLOR_2
+            elif board_color == BOARD_COLOR_2:
+                board_color = BOARD_COLOR_1
+                
+            # initializes the rectangle
+            square = pg.Rect(square_x, square_y, SQUARE_SIZE, SQUARE_SIZE)
+            pg.draw.rect(screen, board_color, square)
+        # resets x position
+        square_x = SQUARE_INITIAL_X
+
 if __name__ == "__main__":
+    
     app()
